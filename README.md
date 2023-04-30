@@ -17,12 +17,18 @@
 ## Requirement
 
 > **1. Login | Logout**
->
-> > JWT Token을 발행하여 인증을 제어하는 방식
->
+
+- JSON 형식의 데이터를 받아들이고, 응답으로 JSON 형식의 데이터를 반환합니다.
+  <br>
+- APIView 클래스를 상속받아 HTTP 메소드인 GET, POST를 사용하여 HTTP 요청을 처리합니다.
+  <br>
+- RESTful API를 구현하기 위해 HTTP 상태 코드(status code)를 사용하여 적절한 응답을 반환합니다.
+  <br>
+- JWT 패키지를 사용하여 사용자 인증을 처리합니다.
+
 > **2. Products**
 >
-> - > 속성
+> - > 속성 :
 >   > Name
 >   > Description
 >   > Categories

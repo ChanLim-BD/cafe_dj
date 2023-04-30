@@ -16,11 +16,11 @@
 
 ## Requirement
 
-> 1. Login | Logout
-
-JWT Token을 발행하여 인증을 제어하는 방식
-
-> 2. Products
+> **1. Login | Logout**
+>
+> > JWT Token을 발행하여 인증을 제어하는 방식
+>
+> **2. Products**
 >
 > - > 속성
 >   > Name

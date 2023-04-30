@@ -1,5 +1,8 @@
-django~=3.7
-django-filter
+Django==3.7
+django-filters
 djangorestframework
 mysqlclient~=2.0.1
 jamo
+bcrypt
+jwt
+re

@@ -1,5 +1,3 @@
-from django.db.models import Q
-from django.utils.text import slugify
 from jamo import h2j, j2hcj
 import django_filters
 from .models import Product

@@ -14,7 +14,7 @@ class ProductList(APIView):
     permission_classes = [IsAuthenticated]
 
     """
-    List all products or create a new product.
+    모든 상품을 나열
     """
     def get(self, request, format=None):
         name_query = request.query_params.get('name')
@@ -50,7 +50,7 @@ class ProductList(APIView):
 class ProductDetail(APIView):
     permission_classes = [IsAuthenticated]
     """
-    Retrieve, update or delete a product instance.
+    상품 상세 보기
     """
     def get_object(self, pk):
         try:
@@ -82,6 +82,9 @@ class ProductDetail(APIView):
 
 class ProductCreate(APIView):
     permission_classes = [IsAuthenticated]
+    """
+    상품 생성
+    """
 
     def post(self, request, format=None):
         data = request.data.copy()
@@ -98,7 +101,7 @@ class ProductUpdate(APIView):
     permission_classes = [IsAuthenticated]
     allowed_methods = ['PATCH']
     """
-    Update the specified product.
+    상품 업데이트
     """
     def get_object(self, pk):
         try:
@@ -120,6 +123,9 @@ class ProductUpdate(APIView):
 
 class ProductDelete(APIView):
     permission_classes = [IsAuthenticated]
+    """
+    상품 제거
+    """
 
     def get_object(self, pk):
         try:

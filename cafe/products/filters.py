@@ -44,7 +44,9 @@ class ProductFilter(django_filters.FilterSet):
 
         return queryset
 
-
+"""
+밑에는 jamo 없이 시도하다가 pass...
+"""
 
 # import django_filters
 # from .models import Product

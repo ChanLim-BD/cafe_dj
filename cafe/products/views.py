@@ -86,7 +86,7 @@ class ProductCreate(APIView):
     def post(self, request, format=None):
         data = request.data.copy()
         data['account'] = request.user.id
-        serializer = ProductSerializer(data=data)
+        serializer = ProductSerializer(data=data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

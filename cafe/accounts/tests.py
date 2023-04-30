@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from rest_framework import status
 
-from .models import Account
+from accounts.models import Account
 
 class SignUpViewTest(TestCase):
     def setUp(self):
@@ -40,26 +40,26 @@ class SignUpViewTest(TestCase):
         response = self.client.post(self.signup_url, json.dumps(self.valid_data), content_type='application/json')
         
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json(), {'MESSAGE': 'SUCCESS'})
+        self.assertEqual(response.json(), {'meta': {'code': 201, 'message': 'SUCCESS'}})
     
     def test_duplicate_phone_signup(self):
         # 가입 요청을 두 번 보냅니다.
         response_1 = self.client.post(self.signup_url, json.dumps(self.duplicate_phone_data), content_type='application/json')
         response_2 = self.client.post(self.signup_url, json.dumps(self.duplicate_phone_data), content_type='application/json')
         self.assertEqual(response_1.status_code, 201)
-        self.assertEqual(response_1.json(), {'MESSAGE': 'SUCCESS'})
+        self.assertEqual(response_1.json(), {'meta': {'code': 201, 'message': 'SUCCESS'}})
         self.assertEqual(response_2.status_code, 400)
-        self.assertEqual(response_2.json(), {'MESSAGE': 'PHONE_DUPLICATED'})
+        self.assertEqual(response_2.json(), {'meta': {'code': 400, 'message': 'PHONE_DUPLICATED'}})
     
     def test_invalid_phone_signup(self):
         response = self.client.post(self.signup_url, json.dumps(self.invalid_phone_data), content_type='application/json')
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {'MESSAGE': 'INVALID_PHONE_NUMBER'})
-    
+        self.assertEqual(response.json(), {'meta': {'code': 400, 'message': 'INVALID_PHONE_NUMBER'}})
+   
     def test_invalid_password_signup(self):
         response = self.client.post(self.signup_url, json.dumps(self.invalid_password_data), content_type='application/json')
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {'MESSAGE': 'PASSWORD_VALIDATION'})
+        self.assertEqual(response.json(), {'meta': {'code': 400, 'message': 'PASSWORD_VALIDATION'}})
 
 
 class SignInViewTest(TestCase):
@@ -119,35 +119,41 @@ class SignInViewTest(TestCase):
     def test_signin_success(self):
         response = self.client.post(self.signin_url, data=self.valid_signin_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.access_token = response.data['Authorization']
+        self.assertIn('Authorization', response.data['meta'])
+        self.access_token = response.data['meta']['Authorization']
         
     def test_signin_empty_phone(self):
         response = self.client.post(self.signin_url, data=self.empty_phone_signin_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['MESSAGE'], 'Enter Your User Phone or Password')
+        self.assertEqual(response.data['meta']['code'], 400)
+        self.assertEqual(response.data['meta']['message'], 'Enter Your User Phone or Password')
         
     def test_signin_empty_password(self):
         response = self.client.post(self.signin_url, data=self.empty_password_signin_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['MESSAGE'], 'Enter Your User Phone or Password')
+        self.assertEqual(response.data['meta']['code'], 400)
+        self.assertEqual(response.data['meta']['message'], 'Enter Your User Phone or Password')
         
     def test_signin_invalid_phone(self):
         response = self.client.post(self.signin_url, data=self.invalid_phone_signin_data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.data['MESSAGE'], 'INVALID_USER')
-        
+        self.assertEqual(response.data['meta']['code'], 401)
+        self.assertEqual(response.data['meta']['message'], 'INVALID_USER')
+            
     def test_signin_invalid_password(self):
         response = self.client.post(self.signin_url, data=self.invalid_password_signin_data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.data['MESSAGE'], 'INVALID_USER')
+        self.assertEqual(response.data['meta']['code'], 401)
+        self.assertEqual(response.data['meta']['message'], 'INVALID_USER')
         
     def test_signout_success(self):
         # 로그인
         response = self.client.post(self.signin_url, data=self.valid_signin_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.access_token = response.data['Authorization']
+        self.assertIn('Authorization', response.data['meta'])
+        self.access_token = response.data['meta']['Authorization']
         
         # 로그아웃
-        response = self.client.get(reverse('signout'), HTTP_AUTHORIZATION=self.access_token)
+        response = self.client.get(reverse('signout'), HTTP_AUTHORIZATION='Bearer ' + self.access_token)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, {'MESSAGE': 'SUCCESS'})

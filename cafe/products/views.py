@@ -9,6 +9,12 @@ from .filters import ProductFilter
 from django.http import Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+class CustomResponse(Response):
+    def __init__(self, data=None, status=None, template_name=None, headers=None,
+                 exception=False, content_type=None, **kwargs):
+        if status is not None:
+            data = {'meta': {'code': status, 'message': data}, 'data': None}
+        super().__init__(data, status, template_name, headers, exception, content_type, **kwargs)
 
 class ProductList(APIView):
     permission_classes = [IsAuthenticated]
@@ -43,7 +49,7 @@ class ProductList(APIView):
             'prev_cursor': str(products.previous_page_number()) if products.has_previous() else None,
             'results': serializer.data
         }
-        return Response(data)
+        return CustomResponse(data)
     
 
 
@@ -64,20 +70,20 @@ class ProductDetail(APIView):
     def get(self, request, pk, format=None):
         product = self.get_object(pk)
         serializer = ProductSerializer(product)
-        return Response(serializer.data)
+        return CustomResponse(serializer.data)
 
     def put(self, request, pk, format=None):
         product = self.get_object(pk)
         serializer = ProductSerializer(product, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return CustomResponse(serializer.data)
+        return CustomResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         product = self.get_object(pk)
         product.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return CustomResponse(status=status.HTTP_204_NO_CONTENT)
 
 
 class ProductCreate(APIView):
@@ -92,8 +98,8 @@ class ProductCreate(APIView):
         serializer = ProductSerializer(data=data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return CustomResponse(serializer.data, status=status.HTTP_201_CREATED)
+        return CustomResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -117,8 +123,8 @@ class ProductUpdate(APIView):
         serializer = ProductSerializer(product, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return CustomResponse(serializer.data)
+        return CustomResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 class ProductDelete(APIView):
@@ -138,4 +144,4 @@ class ProductDelete(APIView):
         if not request.user == product.account:
             raise PermissionDenied
         product.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return CustomResponse(status=status.HTTP_204_NO_CONTENT)

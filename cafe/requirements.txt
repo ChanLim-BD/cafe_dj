@@ -1,5 +1,5 @@
 Django==3.7
-django-filters
+django-filter
 djangorestframework
 mysqlclient~=2.0.1
 jamo

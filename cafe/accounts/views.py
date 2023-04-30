@@ -15,7 +15,7 @@ class SignUpView(APIView):
         data = request.data
 
         try:
-            # 전화 번호 확인
+            # 전화 번호 확인 (정규 표현식으로 01로 시작해서 8~11자리의 숫자만 받도록)
             phone_regex = re.compile(r'^01[0-9]{8,11}$')
             if data['phone'] == '' or (phone_regex.match(str(data['phone'])) is None):
                 return Response({'meta': {'code': 400, 'message': 'INVALID_PHONE_NUMBER'}}, status=status.HTTP_400_BAD_REQUEST)

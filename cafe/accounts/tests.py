@@ -37,6 +37,7 @@ class SignUpViewTest(TestCase):
         }
     
     def test_valid_signup(self):
+        # 가입 유효
         response = self.client.post(self.signup_url, json.dumps(self.valid_data), content_type='application/json')
         
         self.assertEqual(response.status_code, 201)
@@ -52,11 +53,13 @@ class SignUpViewTest(TestCase):
         self.assertEqual(response_2.json(), {'meta': {'code': 400, 'message': 'PHONE_DUPLICATED'}})
     
     def test_invalid_phone_signup(self):
+        # 유효하지 않은 상황 (휴대폰 번호)
         response = self.client.post(self.signup_url, json.dumps(self.invalid_phone_data), content_type='application/json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {'meta': {'code': 400, 'message': 'INVALID_PHONE_NUMBER'}})
    
     def test_invalid_password_signup(self):
+        # 유효하지 않은 상황 (비밀번호)
         response = self.client.post(self.signup_url, json.dumps(self.invalid_password_data), content_type='application/json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {'meta': {'code': 400, 'message': 'PASSWORD_VALIDATION'}})
@@ -117,30 +120,35 @@ class SignInViewTest(TestCase):
         )
         
     def test_signin_success(self):
+        # 로그인 성공
         response = self.client.post(self.signin_url, data=self.valid_signin_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('Authorization', response.data['meta'])
         self.access_token = response.data['meta']['Authorization']
         
     def test_signin_empty_phone(self):
+        # 휴대폰 번호 X
         response = self.client.post(self.signin_url, data=self.empty_phone_signin_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['meta']['code'], 400)
         self.assertEqual(response.data['meta']['message'], 'Enter Your User Phone or Password')
         
     def test_signin_empty_password(self):
+        # 비밀번호 X
         response = self.client.post(self.signin_url, data=self.empty_password_signin_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['meta']['code'], 400)
         self.assertEqual(response.data['meta']['message'], 'Enter Your User Phone or Password')
         
     def test_signin_invalid_phone(self):
+        # 유효하지 않은 휴대폰 번호
         response = self.client.post(self.signin_url, data=self.invalid_phone_signin_data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.data['meta']['code'], 401)
         self.assertEqual(response.data['meta']['message'], 'INVALID_USER')
             
     def test_signin_invalid_password(self):
+        # 유효하지 않은 비밀번호
         response = self.client.post(self.signin_url, data=self.invalid_password_signin_data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.data['meta']['code'], 401)

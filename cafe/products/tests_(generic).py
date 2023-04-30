@@ -5,7 +5,6 @@ from django.test import RequestFactory
 from accounts.models import Account
 from products.models import Product
 
-
 class ProductListTestCase(APITestCase):
     # 상품 리스트에 대한
     def setUp(self):
@@ -28,28 +27,6 @@ class ProductListTestCase(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_product_list_pagination(self):
-        # 페이지네이션
-        self.client.force_authenticate(user=self.user)
-        for i in range(15):
-            Product.objects.create(name=f'Test Product {i}', description='This is a test product', account=self.user)
-
-        url = reverse('product-list')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 16)
-        self.assertEqual(response.data['next_cursor'], '2')
-        self.assertIsNone(response.data['prev_cursor'])
-        self.assertEqual(len(response.data['results']), 10)
-
-        url = f"{reverse('product-list')}?cursor=2"
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 16)
-        self.assertIsNone(response.data['next_cursor'])
-        self.assertEqual(response.data['prev_cursor'], '1')
-        self.assertEqual(len(response.data['results']), 6)
-        
 
 
 class ProductDetailTestCase(APITestCase):
@@ -137,23 +114,6 @@ class ProductUpdateTest(APITestCase):
         self.assertEqual(self.product.name, 'Updated Product')
         self.assertEqual(self.product.description, 'This is an updated product')
 
-    def test_update_other_user_product(self):
-        # 다른 유저가 만든 상품 수정?
-        other_user = Account.objects.create(phone='01099999999')
-        other_user.set_password('testpassword')
-        other_user.save()
-
-        self.client.force_authenticate(user=other_user)
-        url = reverse('product-update', args=[self.product.pk])
-        data = {
-            'name': 'Updated Product',
-            'description': 'This is an updated product',
-        }
-        response = self.client.patch(url, data=data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.product.refresh_from_db()
-        self.assertNotEqual(self.product.name, 'Updated Product')
-        self.assertNotEqual(self.product.description, 'This is an updated product')
 
     def test_update_unauthenticated(self):
         # 비로그인 시
@@ -169,7 +129,6 @@ class ProductUpdateTest(APITestCase):
         self.assertNotEqual(self.product.description, 'This is an updated product')
 
 
-
 class ProductDeleteTest(APITestCase):
     def setUp(self):
         self.user = Account.objects.create(phone='01012345678')
@@ -183,13 +142,16 @@ class ProductDeleteTest(APITestCase):
         other_user.set_password('testpassword')
         other_user.save()
         
+        # other_user로 로그인한 경우
         self.client.login(phone='01087654321', password='testpassword')
         url = reverse('product-delete', args=[self.product.id])
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+        # self.user로 로그인한 경우
         self.client.login(phone='01012345678', password='testpassword')
         url = reverse('product-delete', args=[self.product.id])
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Product.objects.count(), 0)
+

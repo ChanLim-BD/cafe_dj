@@ -3,6 +3,7 @@ import django_filters
 from .models import Product
 
 def remove_vowels_and_space(string):
+    # 모음과 ' ' 제거 메서드
     vowels = ['ㅏ', 'ㅑ', 'ㅓ', 'ㅕ', 'ㅗ', 'ㅛ', 'ㅜ', 'ㅠ', 'ㅡ', 'ㅣ', 'ㅔ', 'ㅐ', 'ㅢ', 'ㅟ','ㅙ','ㅞ',' ']
     result = ''
 

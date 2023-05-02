@@ -44,16 +44,10 @@ class ProductList(APIView):
 
         serializer = ProductSerializer(products, many=True)
         data = {
-            'meta': {
-                'code': 200,
-                'message': "OK"
-            },
-            'data': {
-                'count': paginator.count,
-                'next_cursor': str(products.next_page_number()) if products.has_next() else None,
-                'prev_cursor': str(products.previous_page_number()) if products.has_previous() else None,
-                'results': serializer.data
-            }
+            'count': paginator.count,
+            'next_cursor': str(products.next_page_number()) if products.has_next() else None,
+            'prev_cursor': str(products.previous_page_number()) if products.has_previous() else None,
+            'results': serializer.data
         }
         return CustomResponse(data)
     
@@ -76,42 +70,15 @@ class ProductDetail(APIView):
     def get(self, request, pk, format=None):
         product = self.get_object(pk)
         serializer = ProductSerializer(product)
-        res_data = {
-                    "meta": {
-                        "code": 200,
-                        "message": "OK"
-                    },
-                    "data": {
-                        "products": serializer.data
-                    }
-                }
-        return CustomResponse(res_data)
+        return CustomResponse(serializer.data)
 
     def put(self, request, pk, format=None):
         product = self.get_object(pk)
         serializer = ProductSerializer(product, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            res_data = {
-                    "meta": {
-                        "code": 200,
-                        "message": "OK"
-                    },
-                    "data": {
-                        "products": serializer.data
-                    }
-                }
-            return CustomResponse(res_data)
-        res_data = {
-                    "meta": {
-                        "code": 400,
-                        "message": "유효한 데이터가 아님"
-                    },
-                    "data": {
-                        "products": None
-                    }
-                }
-        return CustomResponse(res_data, status=status.HTTP_400_BAD_REQUEST)
+            return CustomResponse(serializer.data)
+        return CustomResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         product = self.get_object(pk)
@@ -131,25 +98,7 @@ class ProductCreate(APIView):
         serializer = ProductSerializer(data=data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
-            res_data = {
-                    "meta": {
-                        "code": 201,
-                        "message": "CREATE"
-                    },
-                    "data": {
-                        "products": serializer.data
-                    }
-                }
-            return CustomResponse(res_data, status=status.HTTP_201_CREATED)
-        res_data = {
-                    "meta": {
-                        "code": 400,
-                        "message": "상품 생성 실패힙니다."
-                    },
-                    "data": {
-                        "products": None
-                    }
-                }
+            return CustomResponse(serializer.data, status=status.HTTP_201_CREATED)
         return CustomResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -174,26 +123,8 @@ class ProductUpdate(APIView):
         serializer = ProductSerializer(product, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            res_data = {
-                    "meta": {
-                        "code": 200,
-                        "message": "OK"
-                    },
-                    "data": {
-                        "products": serializer.data
-                    }
-                }
-            return CustomResponse(res_data)
-        res_data = {
-                    "meta": {
-                        "code": 400,
-                        "message": "유효한 데이터가 아님"
-                    },
-                    "data": {
-                        "products": None
-                    }
-                }
-        return CustomResponse(res_data, status=status.HTTP_400_BAD_REQUEST)
+            return CustomResponse(serializer.data)
+        return CustomResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 class ProductDelete(APIView):

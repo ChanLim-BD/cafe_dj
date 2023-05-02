@@ -41,28 +41,28 @@ class SignUpViewTest(TestCase):
         response = self.client.post(self.signup_url, json.dumps(self.valid_data), content_type='application/json')
         
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json(), {'meta': {'code': 201, 'message': 'SUCCESS'}})
+        self.assertEqual(response.json(), {'meta': {'code': 201, 'message': 'SUCCESS'}, 'data': None})
     
     def test_duplicate_phone_signup(self):
         # 가입 요청을 두 번 보냅니다.
         response_1 = self.client.post(self.signup_url, json.dumps(self.duplicate_phone_data), content_type='application/json')
         response_2 = self.client.post(self.signup_url, json.dumps(self.duplicate_phone_data), content_type='application/json')
         self.assertEqual(response_1.status_code, 201)
-        self.assertEqual(response_1.json(), {'meta': {'code': 201, 'message': 'SUCCESS'}})
+        self.assertEqual(response_1.json(), {'meta': {'code': 201, 'message': 'SUCCESS'}, 'data': None})
         self.assertEqual(response_2.status_code, 400)
-        self.assertEqual(response_2.json(), {'meta': {'code': 400, 'message': 'PHONE_DUPLICATED'}})
+        self.assertEqual(response_2.json(), {'meta': {'code': 400, 'message': 'PHONE_DUPLICATED'}, 'data': None})
     
     def test_invalid_phone_signup(self):
         # 유효하지 않은 상황 (휴대폰 번호)
         response = self.client.post(self.signup_url, json.dumps(self.invalid_phone_data), content_type='application/json')
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {'meta': {'code': 400, 'message': 'INVALID_PHONE_NUMBER'}})
+        self.assertEqual(response.json(), {'meta': {'code': 400, 'message': 'INVALID_PHONE_NUMBER'}, 'data': None})
    
     def test_invalid_password_signup(self):
         # 유효하지 않은 상황 (비밀번호)
         response = self.client.post(self.signup_url, json.dumps(self.invalid_password_data), content_type='application/json')
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {'meta': {'code': 400, 'message': 'PASSWORD_VALIDATION'}})
+        self.assertEqual(response.json(), {'meta': {'code': 400, 'message': 'PASSWORD_VALIDATION'}, 'data': None})
 
 
 class SignInViewTest(TestCase):

@@ -37,18 +37,18 @@ class ProductListTestCase(APITestCase):
         url = reverse('product-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 16)
-        self.assertEqual(response.data['next_cursor'], '2')
-        self.assertIsNone(response.data['prev_cursor'])
-        self.assertEqual(len(response.data['results']), 10)
+        self.assertEqual(response.data['data']['count'], 16)
+        self.assertEqual(response.data['data']['next_cursor'], '2')
+        self.assertIsNone(response.data['data']['prev_cursor'])
+        self.assertEqual(len(response.data['data']['results']), 10)
 
         url = f"{reverse('product-list')}?cursor=2"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 16)
-        self.assertIsNone(response.data['next_cursor'])
-        self.assertEqual(response.data['prev_cursor'], '1')
-        self.assertEqual(len(response.data['results']), 6)
+        self.assertEqual(response.data['data']['count'], 16)
+        self.assertIsNone(response.data['data']['next_cursor'])
+        self.assertEqual(response.data['data']['prev_cursor'], '1')
+        self.assertEqual(len(response.data['data']['results']), 6)
         
 
 

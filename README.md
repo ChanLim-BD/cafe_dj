@@ -44,6 +44,14 @@
   * jamo 패키지
 
 * Custom Response Json 형식
-  * 정확히 요구 사항에 맞춘 JSON 형식을 구현하는데, TEST_CASE까지가 미흡합니다.
-  * 따라서 TEST_CASE까지 완료한 코드를 주 코드로 사용하고, generic을 사용한 코드와 요구사항에 맞는 CustomResponse 코드를 추가합니다.
-  * Response에 Dict 형식의 데이터를 추가하여 전달하는 과정이기 때문에 어려움이 없습니다.
+  * 'meta' 와 'data' 형식으로 반환합니다.
+
+---
+
+### 개선해야할 점
+* Django User를 Customize하는 방식.
+* Django의 내장된 User를 사용하면 인증 및 회원가입 로그인/로그아웃이 간편해진다.
+  * 다만, JWT 이용이 애매해진다. 
+* 기본 DRF를 활용하는 방법에 대해 덜 익숙하다.
+  * Django REST API가 제공하는 클래스들을 활용하면 REST API일지라도 데이터 입력하는 FORM을 제공하므로 DB에 데이터 추가하기 편하다.
+  * 안그러면 일일이 JSON 형식으로 작성해서 보내야한다.

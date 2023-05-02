@@ -37,3 +37,11 @@
 >   > Cost
 >   > Expiration_date
 >   > Size
+
+* 상품 이름 기반으로 `like 검색`과 `초성 검색`이 가능합니다.
+  * jamo 패키지
+
+* Custom Response Json 형식
+  * 정확히 요구 사항에 맞춘 JSON 형식을 구현하는데, TEST_CASE까지가 미흡합니다.
+  * 따라서 TEST_CASE까지 완료한 코드를 주 코드로 사용하고, generic을 사용한 코드와 요구사항에 맞는 CustomResponse 코드를 추가합니다.
+  * Response에 Dict 형식의 데이터를 추가하여 전달하는 과정이기 때문에 어려움이 없습니다.

@@ -6,9 +6,11 @@
 
 > **Django/DRF, mySQL:5.7**
 
-![](https://velog.velcdn.com/images/chan9708/post/51ce05c0-e255-49a9-93db-86135a91f53d/image.png)
+![](https://velog.velcdn.com/images/chan9708/post/2c8a1985-45e0-4299-b503-47002396e536/image.png)
 
-![](https://velog.velcdn.com/images/chan9708/post/5d64864d-b36f-456b-9d2d-ee72ac372aea/image.png)
+![](https://velog.velcdn.com/images/chan9708/post/ecc496d5-4fb8-46df-9814-f447687a6935/image.png)
+
+![](https://velog.velcdn.com/images/chan9708/post/c0d3cbd0-45bf-4601-a651-87c6d55263ec/image.png)
 
 ![](https://velog.velcdn.com/images/chan9708/post/ccc594fa-c9fa-4135-93bc-1951fe2ff113/image.png)
 
